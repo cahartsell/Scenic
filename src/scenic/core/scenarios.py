@@ -14,6 +14,39 @@ class Scene:
 		self.egoObject = egoObject
 		self.params = params
 
+	def parser(self):
+		""" Iterates over the object and displays the atttributes"""
+		id = 0
+		retList = []
+
+		for obj in self.objects:
+
+			dict = {}
+			dict["name"] = id
+			dict["width"] = obj.width
+			dict["height"] = obj.height
+			dict["center"] = (obj.position.x, obj.position.y)
+
+			# this is to make sure that there is a color (RGB)
+			if hasattr(obj, 'color'):
+				color = obj.color
+			else:
+				color = (1,0,0)
+
+			dict["color"] = (color[0], color[1], color[2])
+
+			# adds all 4 corners to the dict
+			dict["topRight"] = (obj.corners[0].x, obj.corners[0].y)
+			dict["topLeft"] = (obj.corners[1].x, obj.corners[1].y)
+			dict["botLeft"] = (obj.corners[2].x, obj.corners[2].y)
+			dict["botRight"] = (obj.corners[3].x, obj.corners[3].y)
+
+			id = id + 1
+			retList.append(dict)
+
+		return retList
+
+
 	def show(self, zoom=None, block=True):
 		"""Render a schematic of the scene for debugging"""
 		import matplotlib.pyplot as plt
@@ -22,6 +55,7 @@ class Scene:
 		# draw objects
 		for obj in self.objects:
 			obj.show(self.workspace, plt, highlight=(obj is self.egoObject))
+			# print(obj.__dict__) # this allows us to display all attrubytes of the object, we probably want to mess around in here
 		# zoom in if requested
 		if zoom != None:
 			self.workspace.zoomAround(plt, self.objects, expansion=zoom)
