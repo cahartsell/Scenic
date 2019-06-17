@@ -70,10 +70,19 @@ def generateScene():
 def sceneParsing(scene):
     """This function parses a scene and returns a JSON file with the information about the scene"""
     objectList = scene.parser()
-    # print(objectList)
     worldDict = {}
     worldDict["world"] = objectList
-    return worldDict
+
+    # prints to an external file, selects a default location or uses user input
+    if args.outputFile is None:
+        outputPath = 'examples/jsonFormat/testOutput.txt'
+    else:
+        outputPath = args.outputFile
+
+    with open(outputPath, 'a') as outfile:
+        json.dump(worldDict, outfile)
+        outfile.write('\n')
+
 
 if args.gather_stats is None:   # Generate scenes interactively until killed
     import matplotlib.pyplot as plt
@@ -87,17 +96,7 @@ if args.gather_stats is None:   # Generate scenes interactively until killed
             plt.clf()
 
         # introduced by yuul, code to parse the scene and print to external file
-        if args.outputFile is None:
-            outputPath = 'examples/jsonFormat/testOutput.txt'
-        else:
-            outputPath = args.outputFile
-
-        worldDict = sceneParsing(scene) # parses the scene
-        # prints to an external file
-        with open(outputPath, 'a') as outfile:
-            json.dump(worldDict, outfile)
-            outfile.write('\n')
-
+        worldDict = sceneParsing(scene)
 else:   # Gather statistics over the specified number of scenes
     its = []
     startTime = time.time()
