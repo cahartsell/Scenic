@@ -24,6 +24,8 @@ parser.add_argument('-z', '--zoom', help='zoom expansion factor', type=float, de
 parser.add_argument('-s', '--seed', help='random seed', type=int)
 parser.add_argument('-v', '--verbosity', help='verbosity level (default 1)',
                     type=int, choices=(0, 1, 2, 3), default=1)
+# adds argument input for outputfile location
+parser.add_argument('-f', '--outputFile', help='name of file to output generated Scenario to')
 
 # Debugging options
 debugOpts = parser.add_argument_group('debugging options')
@@ -68,13 +70,10 @@ def generateScene():
 def sceneParsing(scene):
     """This function parses a scene and returns a JSON file with the information about the scene"""
     objectList = scene.parser()
-    print(objectList)
+    # print(objectList)
     worldDict = {}
     worldDict["world"] = objectList
-
-    # prints to an external file
-    with open('examples/jsonFormat/testOutput.txt', 'w') as outfile:
-        json.dump(worldDict, outfile)
+    return worldDict
 
 if args.gather_stats is None:   # Generate scenes interactively until killed
     import matplotlib.pyplot as plt
@@ -86,7 +85,19 @@ if args.gather_stats is None:   # Generate scenes interactively until killed
             scene.show(zoom=args.zoom, block=False)
             plt.pause(delay)
             plt.clf()
-        sceneParsing(scene) # parses the scene
+
+        # introduced by yuul, code to parse the scene and print to external file
+        if args.outputFile is None:
+            outputPath = 'examples/jsonFormat/testOutput.txt'
+        else:
+            outputPath = args.outputFile
+
+        worldDict = sceneParsing(scene) # parses the scene
+        # prints to an external file
+        with open(outputPath, 'a') as outfile:
+            json.dump(worldDict, outfile)
+            outfile.write('\n')
+
 else:   # Gather statistics over the specified number of scenes
     its = []
     startTime = time.time()
