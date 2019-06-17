@@ -75,7 +75,7 @@ def sceneParsing(scene):
 
     # prints to an external file, selects a default location or uses user input
     if args.outputFile is None:
-        outputPath = 'examples/jsonFormat/testOutput.txt'
+        outputPath = 'examples/jsonFormat/output/testOutput.txt'
     else:
         outputPath = args.outputFile
 

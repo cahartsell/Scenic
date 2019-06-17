@@ -1,5 +1,5 @@
 # JSON format test files
-examples/jsonFormat/
+examples/jsonFormat/output/
 
 # Webots temporary files
 .*.wbproj
