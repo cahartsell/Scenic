@@ -22,10 +22,23 @@ class Scene:
 		for obj in self.objects:
 
 			dict = {}
-			dict["name"] = id
+			dict["name"] = type(obj).__name__
+			dict["id"] = id
 			dict["width"] = obj.width
 			dict["height"] = obj.height
-			dict["center"] = (obj.position.x, obj.position.y)
+			dict["x"] = obj.position.x
+			dict["y"] = obj.position.y
+
+			# adds 3d components
+			if hasattr(obj, 'depth'):
+				dict["depth"] = obj.depth
+			else:
+				dict["depth"] = 1
+
+			if hasattr(obj, 'position.z'):
+				dict["z"] = obj.position.z
+			else:
+				dict["z"] = 0
 
 			# this is to make sure that there is a color (RGB)
 			if hasattr(obj, 'color'):

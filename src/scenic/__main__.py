@@ -11,7 +11,6 @@ import scenic.syntax.translator as translator
 
 # for JSON sceneParsing
 import json
-import os
 
 parser = argparse.ArgumentParser(prog='scenic',
                                  usage='scenic [-h] [options] scenario',
