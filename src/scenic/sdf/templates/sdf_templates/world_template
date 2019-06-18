@@ -1,0 +1,5 @@
+<sdf version="1.5">
+    <world name="{{world_name}}">
+
+{{model}}   </world>
+</sdf>

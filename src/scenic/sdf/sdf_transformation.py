@@ -7,13 +7,13 @@ env = Environment(
     autoescape=select_autoescape(['html', 'xml'])
 )
 
-print('<sdf version="1.5">\n    <world name="Example Car World">\n')
-
-template = env.get_template('model_template')
+world_template = env.get_template('world_template')
+model_template = env.get_template('model_template')
 
 with open('world_data.json') as json_file:
     data = json.load(json_file)
+    all_models = ''
     for x in data['world']:
-        print(template.render(model_name=x['name']), '\n')
-
-print('    </world>\n</sdf>')
+        all_models = all_models + model_template.render(model_name=x['name']) + '\n\n'
+    with open('example.sdf', 'w+') as write_file:
+        write_file.write(world_template.render(world_name='world', model=all_models))

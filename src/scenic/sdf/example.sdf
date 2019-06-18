@@ -1,0 +1,17 @@
+<sdf version="1.5">
+    <world name="world">
+
+        <model name="car">
+            <pose>  # position goes here  </pose>
+        </model>
+
+        <model name="car2">
+            <pose>  # position goes here  </pose>
+        </model>
+
+        <model name="car3">
+            <pose>  # position goes here  </pose>
+        </model>
+
+   </world>
+</sdf>
