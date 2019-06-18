@@ -1,2 +1,3 @@
-    <model name="{{model_name}}">
-    </model>
+        <model name="{{model_name}}">
+            <pose>  # position goes here  </pose>
+        </model>
