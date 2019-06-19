@@ -46,7 +46,7 @@ class Scene:
 			else:
 				color = (1,0,0)
 
-			dict["color"] = (color[0], color[1], color[2])
+			dict["color"] = color[0] + ' ' + color[1] + ' ' + color[2]
 
 			# adds all 4 corners to the dict
 			dict["topRight"] = (obj.corners[0].x, obj.corners[0].y)

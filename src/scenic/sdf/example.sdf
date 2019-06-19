@@ -1,13 +1,13 @@
 <sdf version="1.5">
     <world name="Example World">
 
-        <model name="car">
-            <pose> 5 3 0 0 0 0 </pose>
+        <model name="car0">
+            <pose> 5 3 0 0 0 1.57 </pose>
             <link name="link">
                 <visual name="visual">
                     <geometry>
                         <box>
-                            <size> 1 1 1 </size> # dependent on shape_type
+                            <size> 5 6 1 </size>
                         </box>
                     </geometry>
                     <material>
@@ -20,13 +20,13 @@
             </link>
         </model>
 
-        <model name="car2">
-            <pose> 0 -5 0 0 0 0 </pose>
+        <model name="car1">
+            <pose> 0 -5 0 0 0 3.14 </pose>
             <link name="link">
                 <visual name="visual">
                     <geometry>
                         <box>
-                            <size> 1 1 1 </size> # dependent on shape_type
+                            <size> 2 2 1 </size>
                         </box>
                     </geometry>
                     <material>
@@ -39,13 +39,13 @@
             </link>
         </model>
 
-        <model name="car3">
+        <model name="car2">
             <pose> 10 10 0 0 0 0 </pose>
             <link name="link">
                 <visual name="visual">
                     <geometry>
                         <box>
-                            <size> 1 1 1 </size> # dependent on shape_type
+                            <size> 2 2 1 </size>
                         </box>
                     </geometry>
                     <material>

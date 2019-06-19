@@ -4,7 +4,7 @@
                 <visual name="visual">
                     <geometry>
                         <{{shape_type}}>
-                            <size> 1 1 1 </size> # dependent on shape_type
+                            {{size}}
                         </{{shape_type}}>
                     </geometry>
                     <material>

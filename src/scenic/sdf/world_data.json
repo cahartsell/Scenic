@@ -18,7 +18,7 @@
     },
 
     {
-      "name": "car2",
+      "name": "car",
       "id": "1",
       "width": "2",
       "height": "2",
@@ -35,7 +35,7 @@
     },
 
     {
-      "name": "car3",
+      "name": "car",
       "id": "2",
       "width": "2",
       "height": "2",
