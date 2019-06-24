@@ -8,10 +8,10 @@
                         </{{shape_type}}>
                     </geometry>
                     <material>
-                        <ambient> {{color}} 1 </ambient>
-                        <diffuse> {{color}} 1 </diffuse>
-                        <specular> {{color}} 1 </specular>
-                        <emissive> {{color}} 1 </emissive>
+                        <ambient> {{color}} </ambient>
+                        <diffuse> {{color}} </diffuse>
+                        <specular> {{color}} </specular>
+                        <emissive> {{color}} </emissive>
                     </material>
                 </visual>
             </link>
