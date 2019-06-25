@@ -9,6 +9,7 @@ Calls on a file and writes the generated scenario to an sdf file
 
 # Input and output file name
 fileName = "examples/gazebo/simpleCube.sc"
+world_name = "Example World"
 outFile = "examples/gazebo/outputs/test.sdf"
 
 # Load scenario from file
@@ -27,6 +28,6 @@ def generateScene():
     return scene, iterations
 
 scene, _ = generateScene()
-output = Gazebo.config(scene)
+output = Gazebo.config(scene, world_name)
 with open(outFile, 'w+') as fileObj:
     fileObj.write(output)
