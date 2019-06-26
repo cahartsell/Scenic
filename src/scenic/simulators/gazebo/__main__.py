@@ -9,7 +9,7 @@ Calls on a file and writes the generated scenario to an sdf file
 
 # Input and output file name
 fileName = "examples/gazebo/simpleCube.sc"
-world_name = "Example World"
+world_name = "empty_underwater"
 outFile = "examples/gazebo/outputs/test.sdf"
 
 # Load scenario from file
