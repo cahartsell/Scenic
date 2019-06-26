@@ -1,10 +1,10 @@
 # all classes are derived from the Scenic 'Object' base class
 # each defined class must add additional fields to fill model template (field names must match template placeholders)
-# necessary fields include: model_name, x, y, z, roll, pitch, yaw, shape_type, size, color
 
 
 constructor Cube:
-    model_name: 'Cube'
+    model_name: 'cube'
+    static: 'false'
     x: self.position[0]  # isolate x coordinate of position, default value = 0
     y: self.position[1]  # isolate y coordinate of position, default value = 0
     z: 0
@@ -12,14 +12,15 @@ constructor Cube:
     pitch: 0
     yaw: self.heading  # default heading = 0
     shape_type: 'box'  # SDF built-in shape type
-    height: 5  # override default dimensions of 1 x 1 x 1
-    width: 5
-    depth: 5
+    height: 1
+    width: 1
+    depth: 1
     size: '<size>' + str(self.height) + ' ' + str(self.width) + ' ' + str(self.depth) + '</size>'
-    color: '1 0 0 1'  # color in 'R G B Opacity' format
+    uri: 'model://scenic/simulators/gazebo/models/cube'
 
 constructor Cylinder:
-    model_name: 'Cylinder'
+    model_name: 'cylinder'
+    static: 'false'
     x: self.position[0]
     y: self.position[1]
     z: 0
@@ -28,6 +29,6 @@ constructor Cylinder:
     yaw: self.heading
     shape_type: 'cylinder'
     radius: 1
-    length: 5
+    length: 3
     size: '<radius>' + str(self.radius) + '</radius>' + '\n' + '                            <length>' + str(self.length) + '</length>'
-    color: '0 0 1 1'
+    uri: 'model://scenic/simulators/gazebo/models/cylinder'

@@ -64,10 +64,7 @@
       <cast_shadows>true</cast_shadows>
     </light>
 
-    <include>
-      <uri>model://scenic/simulators/gazebo/models/cube</uri>
-      <pose>1 1 0 0 0 0</pose>
-    </include>
+{{models}}
 
     <!-- Bounding box with sea surface -->
     <include>

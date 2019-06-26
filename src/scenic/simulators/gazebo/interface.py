@@ -2,36 +2,46 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 
 
 class Gazebo:
-    # parses object into SDF model for world file
+    # creates a dictionary of all unique objects in a scene with and their corresponding SDF model specification
     @staticmethod
-    def parse(obj, num):
-        # load the model template from the environment
+    def parse(scene):
+        # load the model template
         env = Environment(
-            loader=PackageLoader('templates', 'sdf_templates'),
+            loader=PackageLoader('templates', 'model_templates'),
             autoescape=select_autoescape(['html', 'xml'])
         )
         model_template = env.get_template('model_template')
 
-        # return the filled model template as a string
-        obj.model_name += str(num)
-        return model_template.render(obj.__dict__)
+        # fill a dictionary with all unique models
+        model_dict = {}
+        for obj in scene.objects:
+            if obj.model_name in model_dict:
+                pass  # do not add repeated object types
+            else:
+                model_dict[obj.model_name] = model_template.render(obj.__dict__)
+        return model_dict
 
-    # fills world file with all models
+    # fills world file with all models as an include block
     @staticmethod
     def config(scene, world_name):
-        # parse all objects in the scenario
-        all_models = ''
-        num = 0
-        for obj in scene.objects:
-            all_models += Gazebo.parse(obj, num) + '\n\n'
-            num += 1
-
-        # load the world template from the environment
+        # load the include block template
         env = Environment(
-            loader=PackageLoader('templates', 'sdf_templates'),
+            loader=PackageLoader('templates', 'model_templates'),
             autoescape=select_autoescape(['html', 'xml'])
         )
-        world_template = env.get_template('world_template')
+        include_template = env.get_template('include_template')
+
+        # iterate through all objects in the scene and add to string
+        all_models = ''
+        for obj in scene.objects:
+            all_models += include_template.render(obj.__dict__)
+
+        # load the world template
+        env = Environment(
+            loader=PackageLoader('templates', 'world_templates'),
+            autoescape=select_autoescape(['html', 'xml'])
+        )
+        world_template = env.get_template(world_name)
 
         # return the filled world template as a string
-        return world_template.render(world_name=world_name, models=all_models)
+        return world_template.render(models=all_models)
