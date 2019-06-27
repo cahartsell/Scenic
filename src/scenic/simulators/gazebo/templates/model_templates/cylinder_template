@@ -1,0 +1,24 @@
+<sdf version="1.5">
+  <model name="{{model_name}}">
+    <static>{{static}}</static>
+    <link name="link">
+      <collision name="{{model_name}}_collision">
+        <geometry>
+          <{{shape_type}}>
+            <radius>{{radius}}</radius>
+            <length>{{length}}</length>
+          </{{shape_type}}>
+        </geometry>
+      </collision>
+
+      <visual name="{{model_name}}_visual">
+        <geometry>
+          <{{shape_type}}>
+            <radius>{{radius}}</radius>
+            <length>{{length}}</length>
+          </{{shape_type}}>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+  <world name="basic_world">
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <include>
+      <uri>model://scenic/simulators/gazebo/models/cube</uri>
+      <pose>1 1 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://scenic/simulators/gazebo/models/cylinder</uri>
+      <pose>5 5 0 0 0 0</pose>
+    </include>
+
+
+
+  </world>
+</sdf>

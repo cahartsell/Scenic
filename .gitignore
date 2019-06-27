@@ -1,3 +1,9 @@
+# IDE stuff
+.idea/
+
+# UUV sim
+src/scenic/simulators/gazebo/models/empty_ocean/
+
 # JSON format test files
 examples/jsonFormat/output/
 

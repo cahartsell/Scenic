@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+  <world name="basic_world">
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+{{models}}
+
+  </world>
+</sdf>

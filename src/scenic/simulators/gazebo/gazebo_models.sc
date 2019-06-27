@@ -15,7 +15,6 @@ constructor Cube:
     height: 1
     width: 1
     depth: 1
-    size: '<size>' + str(self.height) + ' ' + str(self.width) + ' ' + str(self.depth) + '</size>'
     uri: 'model://scenic/simulators/gazebo/models/cube'
 
 constructor Cylinder:
@@ -29,6 +28,18 @@ constructor Cylinder:
     yaw: self.heading
     shape_type: 'cylinder'
     radius: 1
-    length: 3
-    size: '<radius>' + str(self.radius) + '</radius>' + '\n' + '                            <length>' + str(self.length) + '</length>'
+    length: 1
     uri: 'model://scenic/simulators/gazebo/models/cylinder'
+
+constructor Sphere:
+    model_name: 'sphere'
+    static: 'false'
+    x: self.position[0]
+    y: self.position[1]
+    z: 0
+    roll: 0
+    pitch: 0
+    yaw: self.heading
+    shape_type: 'sphere'
+    radius: 1
+    uri: 'model://scenic/simulators/gazebo/models/sphere'
