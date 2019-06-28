@@ -2,8 +2,8 @@
 # each defined class must add additional fields to fill model template (field names must match template placeholders)
 
 
-constructor Cube:
-    model_name: 'cube'
+constructor Box:
+    model_name: 'box'
     static: 'false'
     x: self.position[0]  # isolate x coordinate of position, default value = 0
     y: self.position[1]  # isolate y coordinate of position, default value = 0
@@ -15,7 +15,7 @@ constructor Cube:
     height: 1
     width: 1
     depth: 1
-    uri: 'model://scenic/simulators/gazebo/models/cube'
+    uri: 'model://scenic/simulators/gazebo/models/box'
 
 constructor Cylinder:
     model_name: 'cylinder'

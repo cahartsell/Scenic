@@ -8,7 +8,7 @@ Calls on a file and writes the generated scenario to an sdf file
 """
 
 # Input and output file name
-fileName = "examples/gazebo/simpleCube.sc"
+fileName = "examples/gazebo/simpleBox.sc"
 worldName = "basic_world"
 outFile = "examples/gazebo/outputs/test2.world"
 

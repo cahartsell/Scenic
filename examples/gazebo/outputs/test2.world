@@ -7,7 +7,7 @@
     </include>
 
     <include>
-      <uri>model://scenic/simulators/gazebo/models/cube</uri>
+      <uri>model://scenic/simulators/gazebo/models/box</uri>
       <pose>1 1 0 0 0 0</pose>
     </include>
 
