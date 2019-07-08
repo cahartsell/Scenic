@@ -14,8 +14,10 @@ class Gazebo:
 
         # iterate through all objects in the scene and add to string
         all_models = ''
+        obj_num = 0
         for obj in scene.objects:
-            all_models += include_template.render(obj.__dict__) + '\n\n'
+            all_models += include_template.render(obj.__dict__, object_id=obj.model_name+'_'+str(obj_num)) + '\n\n'
+            obj_num += 1
 
         # load the world template
         env = Environment(

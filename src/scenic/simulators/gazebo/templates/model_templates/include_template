@@ -1,4 +1,5 @@
     <include>
       <uri>{{uri}}</uri>
       <pose>{{x}} {{y}} {{z}} {{roll}} {{pitch}} {{yaw}}</pose>
+      <name>{{object_id}}</name>
     </include>

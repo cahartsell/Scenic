@@ -1,5 +1,4 @@
 # all classes are derived from the Scenic 'Object' base class
-# each defined class must add additional fields to fill model template (field names must match template placeholders)
 
 
 constructor Box:
@@ -15,7 +14,7 @@ constructor Box:
     height: 1
     width: 1
     depth: 1
-    uri: 'model://scenic/simulators/gazebo/models/box'
+    uri: 'model://box'
 
 constructor Cylinder:
     model_name: 'cylinder'
@@ -29,7 +28,7 @@ constructor Cylinder:
     shape_type: 'cylinder'
     radius: 1
     length: 1
-    uri: 'model://scenic/simulators/gazebo/models/cylinder'
+    uri: 'model://cylinder'
 
 constructor Sphere:
     model_name: 'sphere'
@@ -42,4 +41,4 @@ constructor Sphere:
     yaw: self.heading
     shape_type: 'sphere'
     radius: 1
-    uri: 'model://scenic/simulators/gazebo/models/sphere'
+    uri: 'model://sphere'
