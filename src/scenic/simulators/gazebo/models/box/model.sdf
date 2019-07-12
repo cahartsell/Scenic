@@ -1,6 +1,6 @@
 <sdf version="1.5">
   <model name="box">
-    <static>false</static>
+    <static>true</static>
     <link name="link">
       <collision name="box_collision">
         <geometry>

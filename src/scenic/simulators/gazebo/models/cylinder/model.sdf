@@ -1,6 +1,6 @@
 <sdf version="1.5">
   <model name="cylinder">
-    <static>false</static>
+    <static>true</static>
     <link name="link">
       <collision name="cylinder_collision">
         <geometry>

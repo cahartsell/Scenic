@@ -1,6 +1,6 @@
 <sdf version="1.5">
   <model name="sphere">
-    <static>false</static>
+    <static>true</static>
     <link name="link">
       <collision name="sphere_collision">
         <geometry>
