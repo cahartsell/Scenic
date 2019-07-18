@@ -1,0 +1,22 @@
+<sdf version="1.5">
+  <model name="uuv">
+    <static>false</static>
+    <link name="link">
+      <collision name="uuv_collision">
+        <geometry>
+          <box>
+            <size>2 2 2</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="uuv_visual">
+        <geometry>
+          <box>
+            <size>2 2 2</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

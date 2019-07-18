@@ -1,0 +1,22 @@
+<sdf version="1.5">
+  <model name="joint">
+    <static>true</static>
+    <link name="link">
+      <collision name="joint_collision">
+        <geometry>
+          <sphere>
+            <radius>0.5</radius>
+          </sphere>
+        </geometry>
+      </collision>
+
+      <visual name="joint_visual">
+        <geometry>
+          <sphere>
+            <radius>0.5</radius>
+          </sphere>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
