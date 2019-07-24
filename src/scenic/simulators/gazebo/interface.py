@@ -1,5 +1,7 @@
-from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
+import time
 import os
+from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
+import scenic.syntax.translator as translator
 
 
 class Gazebo:
@@ -47,7 +49,7 @@ class Gazebo:
 
     # fills world file with all models as an include block
     @staticmethod
-    def config(scene, world_name):
+    def fill_world(scene, world_name):
         # load the include block template
         env = Environment(
             loader=FileSystemLoader('src/scenic/simulators/gazebo/templates/model_templates'),
@@ -71,3 +73,24 @@ class Gazebo:
 
         # return the filled world template as a string
         return world_template.render(models=all_models)
+
+    @staticmethod
+    def config(scenic_code, world_name):
+        # create scenic file
+        # with open('examples/gazebo/uuv.sc', 'w+') as write_file:
+        #     write_file.write(scenic_code)
+
+        # load scenario from file
+        print('Beginning scenario construction...')
+        startTime = time.time()
+        scenario = translator.scenarioFromFile('examples/gazebo/uuv.sc')
+        totalTime = time.time() - startTime
+        print(f'Scenario constructed in {totalTime:.2f} seconds.')
+
+        # generate scene from loaded scenario
+        startTime = time.time()
+        scene, iterations = scenario.generate(verbosity=3)
+        totalTime = time.time() - startTime
+        print(f'  Generated scene in {iterations} iterations, {totalTime:.4g} seconds.')
+
+        return Gazebo.fill_world(scene, world_name)
