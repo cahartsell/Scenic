@@ -1,4 +1,4 @@
-from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 import os
 
 
@@ -24,7 +24,7 @@ class Gazebo:
 
         # load the template environment
         env = Environment(
-            loader=PackageLoader('scenic/simulators/gazebo/templates', 'model_templates'),
+            loader=FileSystemLoader('src/scenic/simulators/gazebo/templates/model_templates'),
             autoescape=select_autoescape(['html', 'xml'])
         )
 
@@ -50,7 +50,7 @@ class Gazebo:
     def config(scene, world_name):
         # load the include block template
         env = Environment(
-            loader=PackageLoader('scenic/simulators/gazebo/templates', 'model_templates'),
+            loader=FileSystemLoader('src/scenic/simulators/gazebo/templates/model_templates'),
             autoescape=select_autoescape(['html', 'xml'])
         )
         include_template = env.get_template('include_template')
@@ -64,7 +64,7 @@ class Gazebo:
 
         # load the world template
         env = Environment(
-            loader=PackageLoader('scenic/simulators/gazebo/templates', 'world_templates'),
+            loader=FileSystemLoader('src/scenic/simulators/gazebo/templates/world_templates'),
             autoescape=select_autoescape(['html', 'xml'])
         )
         world_template = env.get_template(world_name)
