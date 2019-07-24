@@ -77,8 +77,8 @@ class Gazebo:
     @staticmethod
     def config(scenic_code, world_name):
         # create scenic file
-        # with open('examples/gazebo/uuv.sc', 'w+') as write_file:
-        #     write_file.write(scenic_code)
+        with open('examples/gazebo/uuv.sc', 'w+') as write_file:
+            write_file.write(scenic_code)
 
         # load scenario from file
         print('Beginning scenario construction...')
