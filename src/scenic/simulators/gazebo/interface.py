@@ -1,7 +1,10 @@
 import time
-import os
 from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
 import scenic.syntax.translator as translator
+import os
+
+
+package_directory = os.path.dirname(os.path.abspath(__file__))
 
 
 class Gazebo:
@@ -50,9 +53,11 @@ class Gazebo:
     # fills world file with all models as an include block
     @staticmethod
     def fill_world(scene, world_name):
+        print(os.path.join(package_directory, 'templates/model_templates'))
+
         # load the include block template
         env = Environment(
-            loader=FileSystemLoader('/scenic/simulators/gazebo/templates/model_templates'),
+            loader=FileSystemLoader(os.path.join(package_directory, 'templates/model_templates')),
             autoescape=select_autoescape(['html', 'xml'])
         )
         include_template = env.get_template('include_template')
@@ -66,7 +71,7 @@ class Gazebo:
 
         # load the world template
         env2 = Environment(
-            loader=FileSystemLoader('/scenic/simulators/gazebo/templates/world_templates'),
+            loader=FileSystemLoader(os.path.join(package_directory, 'templates/world_templates')),
             autoescape=select_autoescape(['html', 'xml'])
         )
         world_template = env2.get_template(world_name)

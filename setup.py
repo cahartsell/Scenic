@@ -39,5 +39,6 @@ setup(name='scenic',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Development Status :: 4 - Beta',
-      ]
+      ],
+      include_package_data=True
 )
