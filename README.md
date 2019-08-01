@@ -78,3 +78,21 @@ The models are:
 Scenic is distributed under the 3-Clause BSD License. However, it currently uses the [GPC library](http://www.cs.man.ac.uk/~toby/alan/software/) (through the [Polygon3](https://pypi.org/project/Polygon3/) package), which is free only for non-commercial use.
 GPC is used only in the `triangulatePolygon` function in `scenic.core.geometry`, and you can alternatively plug in any algorithm of your choice for triangulation of polygons with holes.
 We plan to replace GPC with a BSD-compatible library in the near future.
+
+## Modifications for Interfacing to Gazebo
+
+Modifications for interfacing Scenic to Gazebo are located in Scenic/src/scenic/simulators/gazebo. 
+
+Models that can be used in Gazebo simulations are found in gazebo_models.sc. These classes are all derived from the Scenic 'Object' base class. 
+
+Models for the UUV simulation specifically can be found in uuv_models.sc. These classes are derived from the base classes defined in gazebo_models.sc. Additionally, this file contains 
+a function buildPipeline, which is used to connect pipe segments and vary the pipe heading within a specified angle range. The first pipe in the segment must be placed manually, and the function 
+takes this pipe as an argument. The function also takes the number of pipe segments to add and the maximum angle variation in radians as arguments. 
+
+To add new objects to use in Scenic programs, new classes can be defined in the same manner as classes were defined in the uuv_models.sc file. These objects must also have corresponding Gazebo model 
+files (model.config and model.sdf) to function with Gazebo. These files must be located in src/scenic/simulators/gazebo/models. The model files can be created manually or automatically. 
+Functionality for filling model files automatically is found in the master branch of yuul/Scenic in the interface.py file. 
+
+The code for creating a Gazebo world file from a Scenic scenario is primarily located in the interface.py file. The fill_world function in this file takes a scene and the name of the world to use. 
+Scenes are generated using the built-in Scenic functionality. The world_name parameter must be the name of a template located in the world_templates directory. The fill_world function 
+will parse the scene and add all objects into the world template. Objects are added to the world file in the form of an include block with a uri the model files (model.config and model.sdf).
