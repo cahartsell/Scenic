@@ -37,3 +37,29 @@ Functionality for creating model files automatically is found in the master bran
 The code for creating a Gazebo world file from a Scenic scene is primarily located in the interface.py file. The fill_world function in this file takes a scene and the name of the world to use as arguments. 
 Scenes are generated using the built-in Scenic functionality. The world_name parameter must be the name of a template located in the world_templates directory. The fill_world function 
 will parse the scene and add all objects into the world template. Objects are added in the form of an include block with a uri to the model files (model.config and model.sdf).
+
+#### Gazebo Examples:
+
+**NOTE**: All commands in this section assume the working directory is the top-level of the modified Scenic repo. 
+
+To run the gazebo interface examples, first install modified Scenic using `poetry`.
+A python virtualenv may be useful to avoid conflicting with any existing Scenic installations.
+
+```
+poetry install
+```
+
+There are two ways to run the example scenario. 
+First is using the standard Scenic libraries to generate and produce plots of random pipelines:
+
+```
+python -m scenic examples/gazebo/uuv.scenic
+```  
+
+Second, the interface can also generate Gazebo world files (XML format) containing a description of the randomly generated pipeline:
+
+```
+python -m scenic.simulators.gazebo
+```
+
+This should produce a world file containing a random pipeline at `examples/gazebo/outputs/uuv_sim.world`
