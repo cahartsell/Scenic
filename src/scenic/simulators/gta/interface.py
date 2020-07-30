@@ -1,3 +1,4 @@
+"""Python supporting code for the GTA model."""
 
 import math
 import time
@@ -20,6 +21,7 @@ from scenic.core.lazy_eval import valueInContext
 from scenic.core.workspaces import Workspace
 from scenic.core.vectors import VectorField
 from scenic.core.regions import PointSetRegion, GridRegion
+from scenic.core.object_types import Mutator
 import scenic.core.utils as utils
 from scenic.core.geometry import *
 
@@ -67,7 +69,18 @@ class GTA:
 ### Map
 
 class Map:
-	"""Represents roads and obstacles in GTA"""
+	"""Represents roads and obstacles in GTA, extracted from a map image.
+
+	This code handles images from the `GTA V Interactive Map <https://gta-5-map.com/>`_,
+	rendered with the "Road" setting.
+
+	Args:
+		imagePath (str): path to image file
+		Ax (float): width of one pixel in GTA coordinates
+		Ay (float): height of one pixel in GTA coordinates
+		Bx (float): GTA X-coordinate of bottom-left corner of image
+		By (float): GTA Y-coordinate of bottom-left corner of image
+	"""
 	def __init__(self, imagePath, Ax, Ay, Bx, By):
 		self.Ax, self.Ay = Ax, Ay
 		self.Bx, self.By = Bx, By
@@ -81,12 +94,16 @@ class Map:
 			self.displayImage = cv2.cvtColor(numpy.array(de), cv2.COLOR_RGB2BGR)
 			# detect edges of roads
 			ed = center_detection.compute_midpoints(img_data=image, kernelsize=5)
-			self.edgeData = { self.mapToLangCoords((x, y)): datum for (y, x), datum in ed.items() }
+			self.edgeData = {
+				self.gridToScenicCoords((x, y)): datum
+				for (y, x), datum in ed.items()
+			}
 			self.orderedCurbPoints = list(self.edgeData.keys())
 			# build k-D tree
 			self.edgeTree = scipy.spatial.cKDTree(self.orderedCurbPoints)
 			# identify points on roads
-			self.roadArray = numpy.array(img_modf.convert_black_white(img_data=image).convert('L'), dtype=int)
+			self.roadArray = numpy.array(img_modf.convert_black_white(img_data=image).convert('L'),
+			                             dtype=int)
 			totalTime = time.time() - startTime
 			verbosePrint(f'Created GTA map from image in {totalTime:.2f} seconds.')
 
@@ -136,18 +153,18 @@ class Map:
 		                      kdTree=self.edgeTree,
 		                      orientation=self.roadDirection)
 
-	def mapToLangCoords(self, point):
+	def gridToScenicCoords(self, point):
 		x, y = point[0], point[1]
 		return ((self.Ax * x) + self.Bx, (self.Ay * y) + self.By)
 
-	def mapToLangHeading(self, heading):
+	def gridToScenicHeading(self, heading):
 		return heading - (math.pi / 2)
 
-	def langToMapCoords(self, point):
+	def scenicToGridCoords(self, point):
 		x, y = point[0], point[1]
 		return ((x - self.Bx) / self.Ax, (y - self.By) / self.Ay)
 
-	def langToMapHeading(self, heading):
+	def scenicToGridHeading(self, heading):
 		return heading + (math.pi / 2)
 
 	@distributionMethod
@@ -156,7 +173,7 @@ class Map:
 		distance, location = self.edgeTree.query(point)
 		closest = tuple(self.edgeTree.data[location])
 		# get direction of edge
-		return self.mapToLangHeading(self.edgeData[closest].tangent)
+		return self.gridToScenicHeading(self.edgeData[closest].tangent)
 
 	def show(self, plt):
 		plt.imshow(self.displayImage)
@@ -167,8 +184,8 @@ class MapWorkspace(Workspace):
 		super().__init__(region)
 		self.map = mappy
 
-	def langToMapCoords(self, coords):
-		return self.map.langToMapCoords(coords)
+	def scenicToSchematicCoords(self, coords):
+		return self.map.scenicToGridCoords(coords)
 
 	def show(self, plt):
 		plt.gca().set_aspect('equal')
@@ -181,6 +198,18 @@ class MapWorkspace(Workspace):
 ### Car models and colors
 
 class CarModel:
+	"""A model of car in GTA.
+
+	Attributes:
+		name (str): name of model in GTA
+		width (float): width of this model of car
+		height (float): height of this model of car
+		viewAngle (float): view angle in radians (default is 90 degrees)
+
+	Class Attributes:
+		models: dict mapping model names to the corresponding `CarModel`
+	"""
+
 	def __init__(self, name, width, height, viewAngle=math.radians(90)):
 		super(CarModel, self).__init__()
 		self.name = name
@@ -222,6 +251,7 @@ CarModel.modelProbs = {
 CarModel.models = { model.name: model for model in CarModel.modelProbs }
 
 class CarColor(namedtuple('CarColor', ['r', 'g', 'b'])):
+	"""A car color as an RGB tuple."""
 	@classmethod
 	def withBytes(cls, color):
 		return cls._make(c / 255.0 for c in color)
@@ -232,12 +262,19 @@ class CarColor(namedtuple('CarColor', ['r', 'g', 'b'])):
 
 	@staticmethod
 	def uniformColor():
+		"""Return a uniformly random color."""
 		return toDistribution(CarColor(Range(0, 1), Range(0, 1), Range(0, 1)))
 
 	@staticmethod
 	def defaultColor():
-		"""Base color distribution estimated from 2012 DuPont survey archived at:
-		https://web.archive.org/web/20121229065631/http://www2.dupont.com/Media_Center/en_US/color_popularity/Images_2012/DuPont2012ColorPopularity.pdf"""
+		"""Default color distribution for cars.
+
+		The distribution starts with a base distribution over 9 discrete colors,
+		then adds Gaussian HSL noise. The base distribution uses color popularity
+		statistics from a `2012 DuPont survey`_.
+
+		.. _2012 DuPont survey: https://web.archive.org/web/20121229065631/http://www2.dupont.com/Media_Center/en_US/color_popularity/Images_2012/DuPont2012ColorPopularity.pdf
+		"""
 		baseColors = {
 			(248, 248, 248): 0.24,	# white
 			(50, 50, 50): 0.19,		# black
@@ -258,6 +295,15 @@ class CarColor(namedtuple('CarColor', ['r', 'g', 'b'])):
 		return NoisyColorDistribution(baseColor, hueNoise, satNoise, lightNoise)
 
 class NoisyColorDistribution(Distribution):
+	"""A distribution given by HSL noise around a base color.
+
+	Arguments:
+		baseColor (RGB tuple): base color
+		hueNoise (float): noise to add to base hue
+		satNoise (float): noise to add to base saturation
+		lightNoise (float): noise to add to base lightness
+	"""
+
 	def __init__(self, baseColor, hueNoise, satNoise, lightNoise):
 		super().__init__(baseColor, hueNoise, satNoise, lightNoise, valueType=CarColor)
 		self.baseColor = baseColor
@@ -283,3 +329,12 @@ class NoisyColorDistribution(Distribution):
 		self.hueNoise = valueInContext(self.hueNoise, context)
 		self.satNoise = valueInContext(self.satNoise, context)
 		self.lightNoise = valueInContext(self.lightNoise, context)
+
+class CarColorMutator(Mutator):
+	"""Mutator that adds Gaussian HSL noise to the ``color`` property."""
+	def appliedTo(self, obj):
+		hueNoise = random.gauss(0, 0.05)
+		satNoise = random.gauss(0, 0.05)
+		lightNoise = random.gauss(0, 0.05)
+		color = NoisyColorDistribution.addNoiseTo(obj.color, hueNoise, lightNoise, satNoise)
+		return tuple([obj.copyWith(color=color), True])		# allow further mutation

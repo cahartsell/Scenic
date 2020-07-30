@@ -3,7 +3,7 @@ import pytest
 import math
 import random
 
-from scenic.syntax.translator import InterpreterParseError
+from scenic.syntax.translator import InterpreterParseError, InvalidScenarioError
 from tests.utils import compileScenic, sampleEgo, sampleParamP
 
 ## Utilities
@@ -11,7 +11,7 @@ from tests.utils import compileScenic, sampleEgo, sampleParamP
 def lazyTestScenario(expr, offset='0'):
     """Scenario for testing a lazily-evaluated value inside a distribution.
 
-    Here the value 'x' lazily evaluates to 1.
+    Here the value 'x' lazily evaluates to 1 (plus the offset, if any).
     """
     return compileScenic(
         'vf = VectorField("Foo", lambda pos: 2 * pos.x)\n'
@@ -28,6 +28,8 @@ def test_options_empty_domain():
         compileScenic('x = Options({})')
     with pytest.raises(InterpreterParseError):
         compileScenic('x = Uniform()')
+    with pytest.raises(InterpreterParseError):
+        compileScenic('x = Discrete({})')
 
 def test_options_invalid_weight():
     with pytest.raises(InterpreterParseError):
@@ -66,10 +68,11 @@ def test_uniform_discrete_lazy():
     assert any(h == pytest.approx(1) for h in hs)
 
 def test_options():
-    scenario = compileScenic('ego = Object at Options({0: 1, 1: 9}) @ 0')
-    xs = [sampleEgo(scenario).position.x for i in range(400)]
-    assert all(x == 0 or x == 1 for x in xs)
-    assert sum(xs) >= 300
+    for name in ('Options', 'Discrete'):
+        scenario = compileScenic(f'ego = Object at {name}({{0: 1, 1: 9}}) @ 0')
+        xs = [sampleEgo(scenario).position.x for i in range(400)]
+        assert all(x == 0 or x == 1 for x in xs)
+        assert sum(xs) >= 300
 
 def test_options_lazy():
     scenario = lazyTestScenario('Options({0: 1, x: 9})')
@@ -117,7 +120,7 @@ def test_method_lazy():
     # so we need to define our own
     scenario = compileScenic(
         'from scenic.core.distributions import distributionMethod\n'
-        'class Foo:\n'
+        'class Foo(object):\n'
         '    @distributionMethod\n'
         '    def bar(self, arg):\n'
         '        return -arg\n'
@@ -125,7 +128,23 @@ def test_method_lazy():
         'ego = Object facing Foo().bar((100, 200) * (0 relative to vf))'
     )
     angles = [sampleEgo(scenario).heading for i in range(60)]
-    assert all(-200 <= x <= 100 for x in angles)
+    assert all(-200 <= x <= -100 for x in angles)
+    assert any(x < -150 for x in angles)
+    assert any(-150 < x for x in angles)
+
+def test_method_lazy_2():
+    # See previous comment
+    scenario = compileScenic(
+        'from scenic.core.distributions import distributionMethod\n'
+        'class Foo(object):\n'
+        '    @distributionMethod\n'
+        '    def bar(self, arg):\n'
+        '        return -arg * (100, 200)\n'
+        'vf = VectorField("Baz", lambda pos: 1 + pos.x)\n'
+        'ego = Object facing Foo().bar(0 relative to vf)'
+    )
+    angles = [sampleEgo(scenario).heading for i in range(60)]
+    assert all(-200 <= x <= -100 for x in angles)
     assert any(x < -150 for x in angles)
     assert any(-150 < x for x in angles)
 
@@ -195,6 +214,22 @@ def test_list_param():
     assert any(t[1] == 1 for t in ts)
     assert any(t[1] == 2 for t in ts)
 
+def test_list_param_lazy():
+    with pytest.raises(InvalidScenarioError):
+        compileScenic(
+            'vf = VectorField("Foo", lambda pos: 2 * pos.x)\n'
+            'x = 0 relative to vf\n'
+            'param p = Uniform([0, x], [0, x*2])[1]\n'
+            'ego = Object'
+        )
+
+def test_list_object_lazy():
+    scenario = lazyTestScenario('Uniform([0, x], [1, x])[1]', offset='Uniform(0, 1)')
+    hs = [sampleEgo(scenario).heading for i in range(60)]
+    assert all(h == pytest.approx(1) or h == pytest.approx(2) for h in hs)
+    assert any(h == pytest.approx(1) for h in hs)
+    assert any(h == pytest.approx(2) for h in hs)
+
 def test_tuple():
     scenario = compileScenic('ego = Object with foo tuple([3, Uniform(1, 2)])')
     ts = [sampleEgo(scenario).foo for i in range(60)]
@@ -249,17 +284,24 @@ def test_reproducibility():
             assert scene.params['foo'] == baseScene.params['foo']
             assert iterations == baseIterations
 
+## Independence
+
+def test_independence():
+    scenario = compileScenic('ego = Object at (0, 1) @ (0, 1)')
+    pos = sampleEgo(scenario).position
+    assert pos.x != pos.y
+
 ## Dependencies and lazy evaluation
 
 def test_shared_dependency():
     scenario = compileScenic(
-        'x = (0, 1)\n'
-        'ego = Object at (x + x) @ 0'
+        'x = (-1, 1)\n'
+        'ego = Object at (x * x) @ 0'
     )
     xs = [sampleEgo(scenario).position.x for i in range(60)]
-    assert all(0 <= x <= 2 for x in xs)
-    assert any(x < 1 for x in xs)
-    assert any(1 < x for x in xs)
+    assert all(0 <= x <= 1 for x in xs)
+    assert any(x < 0.25 for x in xs)
+    assert any(0.25 < x for x in xs)
 
 def test_shared_dependency_lazy():
     scenario = compileScenic(
