@@ -4,8 +4,8 @@
 constructor Box:
     model_name: 'box'
     static: 'true'
-    x: self.position[0]  # isolate x coordinate of position, default value = 0
-    y: self.position[1]  # isolate y coordinate of position, default value = 0
+    x: self.position.x  # isolate x coordinate of position, default value = 0
+    y: self.position.y  # isolate y coordinate of position, default value = 0
     z: 0
     roll: 0
     pitch: 0
@@ -21,8 +21,8 @@ constructor Box:
 constructor Cylinder:
     model_name: 'cylinder'
     static: 'true'
-    x: self.position[0]
-    y: self.position[1]
+    x: self.position.x
+    y: self.position.y
     z: 0
     roll: 0
     pitch: 0
@@ -37,8 +37,8 @@ constructor Cylinder:
 constructor Sphere:
     model_name: 'sphere'
     static: 'true'
-    x: self.position[0]
-    y: self.position[1]
+    x: self.position.x
+    y: self.position.y
     z: 0
     roll: 0
     pitch: 0
